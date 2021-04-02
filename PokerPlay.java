@@ -79,7 +79,7 @@ class Card implements Comparable<Card> {
       return " J";
     }
     else {
-      return String.format("2d", number);
+      return String.format("%2d", number);
     }
   }
 
@@ -248,6 +248,25 @@ public class PokerPlay {
       hand.show();
       hands.add(hand);
     }
+    boolean c01 = compareHand(hands.get(0), hands.get(1));
+    boolean c02 = compareHand(hands.get(0), hands.get(2));
+    boolean c03 = compareHand(hands.get(0), hands.get(3));
+    boolean c12 = compareHand(hands.get(1), hands.get(2));
+    boolean c13 = compareHand(hands.get(1), hands.get(3));
+    boolean c23 = compareHand(hands.get(2), hands.get(3));
+
+    if(c01 && c02 && c03){
+      System.out.println(String.format("%s win!", hands.get(0).player));
+    }
+    else if(!c01 && c12 && c13){
+      System.out.println(String.format("%s win!", hands.get(1).player));
+    }
+    else if(!c02 && !c12 && c23){
+      System.out.println(String.format("%s win!", hands.get(2).player));
+    }
+    else {
+      System.out.println(String.format("%s win!", hands.get(3).player));
+    }
   }
 
   public static ArrayList<Card> generateCards(){
@@ -261,5 +280,36 @@ public class PokerPlay {
     }
     Collections.sort(cards);
     return cards;
+  }
+
+  public static boolean compareGroups(ArrayList<Pair> groups1, ArrayList<Pair> groups2){
+    int len1 = groups1.size();
+    int len2 = groups2.size();
+    if (len1 != len2) {
+      return len1 < len2;
+    }
+    else {
+      for(int i=0; i<len1; i++){
+        if(groups1.get(i).number > groups2.get(i).number){
+          return true;
+        }
+        else if(groups1.get(i).number < groups2.get(i).number){
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+
+  public static boolean compareHand(Hand hand1, Hand hand2){
+    if(hand1.rank.numVal > hand2.rank.numVal){
+      return true;
+    }
+    else if(hand1.rank.numVal < hand2.rank.numVal){
+      return false;
+    }
+    else {  // what if same rank
+      return compareGroups(hand1.groups, hand2.groups);
+    }
   }
 }
